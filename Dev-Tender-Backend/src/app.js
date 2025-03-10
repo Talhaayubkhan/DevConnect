@@ -3,7 +3,7 @@ const express = require("express");
 const app = express();
 
 app.use((req, res) => {
-  //   console.log("Server Request = " + req);
+  console.log("server request = ", req);
   res.send("Hello from the server");
 });
 
