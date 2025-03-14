@@ -10,22 +10,22 @@ app.use("/", (err, req, res, next) => {
 
 app.get("/getUserData", (req, res) => {
   // console.log(err);
-  try {
-    throw new Error("this is ErrorMessage");
-    res.send("User Recive the Data from the server");
-  } catch (error) {
-    // console.log(error);
-    res.status(500).send("Something went wrong. Please try again");
-  }
+  // try {
+  throw new Error("this is ErrorMessage");
+  res.send("User Recive the Data from the server");
+  // } catch (error) {
+  // console.log(error);
+  res.status(500).send("Something went wrong. Please try again");
+  // }
 });
 
-// app.use("/", (err, req, res, next) => {
-//   if (err) {
-//     console.log(err);
+app.use("/", (err, req, res, next) => {
+  if (err) {
+    // console.log(err);
 
-//     res.status(500).send("Something went wrong");
-//   }
-// });
+    res.status(500).send("Something went wrong");
+  }
+});
 
 //middleware and route handlers
 
