@@ -1,28 +1,23 @@
-const express = require("express");
-const app = express();
-// const { adminAuthCheck, userAuthCheck } = require("./middlewares/auth");
-
 app.use("/", (err, req, res, next) => {
   if (err) {
     res.status(500).send("Something went wrong");
   }
 });
 
-app.get("/getUserData", (req, res) => {
+app.get("/error", (req, res) => {
   // console.log(err);
   // try {
   throw new Error("this is ErrorMessage");
-  res.send("User Recive the Data from the server");
+  // res.send("User Recive the Data from the server");
   // } catch (error) {
   // console.log(error);
-  res.status(500).send("Something went wrong. Please try again");
+  // res.status(500).send("Something went wrong. Please try again");
   // }
 });
 
 app.use("/", (err, req, res, next) => {
+  console.error(err.stack);
   if (err) {
-    // console.log(err);
-
     res.status(500).send("Something went wrong");
   }
 });
@@ -48,7 +43,3 @@ app.use("/", (err, req, res, next) => {
 //   res.send("USER Login successfully");
 //   next();
 // });
-
-app.listen(5000, () => {
-  console.log("Server running on port 3000");
-});
