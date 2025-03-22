@@ -18,7 +18,7 @@ app.post("/signup", async (req, res) => {
 
 app.get("/users", async (req, res) => {
   // const userEmail = req.body.emailId;
-  const userId = req.body.id;
+  const userId = req.body.userId;
 
   try {
     const findId = await User.findById(userId);
