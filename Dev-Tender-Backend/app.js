@@ -55,6 +55,41 @@ app.get("/feed", async (req, res) => {
     res.status(400).send("User Error");
   }
 });
+app.delete("/user", async (req, res) => {
+  const userId = req.body.userId;
+  try {
+    console.log(userId);
+
+    const findId = await User.findOneAndDelete(userId);
+    if (!findId) {
+      res.status(404).send("User Not Found with id: " + userId);
+    } else {
+      res.send(findId);
+    }
+  } catch (error) {
+    res.status(400).send("User Error");
+  }
+});
+app.patch("/user", async (req, res) => {
+  const userId = req.body.userId;
+  const data = req.body;
+  try {
+    console.log(userId);
+
+    const updateUser = await User.findByIdAndUpdate(userId, data, {
+      returnDocument: "before",
+      lean: true,
+    });
+    // console.log(updateUser);
+    if (!updateUser) {
+      res.status(404).send("User Not Found with id: " + userId);
+    } else {
+      res.send(updateUser);
+    }
+  } catch (error) {
+    res.status(400).send("User Error");
+  }
+});
 
 connectDB()
   .then(() => {
