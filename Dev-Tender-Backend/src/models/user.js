@@ -1,25 +1,63 @@
 const mongoose = require("mongoose");
 
-const userSchema = new mongoose.Schema({
-  firstName: {
-    type: String,
+const userSchema = new mongoose.Schema(
+  {
+    firstName: {
+      type: String,
+      required: true,
+      lowercase: true,
+      minlength: 2,
+      maxlength: 50,
+      trim: true,
+    },
+    lastName: {
+      type: String,
+      maxlength: 100,
+      lowercase: true,
+      trim: true,
+    },
+    passsword: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    emailId: {
+      type: String,
+      required: true,
+      immutable: true,
+      unique: true,
+    },
+    age: {
+      type: Number,
+      required: true,
+      min: 18,
+    },
+    gender: {
+      type: String,
+      required: true,
+      validate(value) {
+        if (!["male", "female", "transgender"].includes(value)) {
+          throw new Error("Invalid gender");
+        }
+      },
+    },
+    photoURL: {
+      type: String,
+      default:
+        "https://png.pngtree.com/png-vector/20231019/ourmid/pngtree-user-profile-avatar-png-image_10211467.png",
+    },
+    about: {
+      type: String,
+      default: "This is the developer documentation for your application",
+    },
+    skills: {
+      type: [String],
+      required: true,
+    },
   },
-  lastName: {
-    type: String,
-  },
-  passsword: {
-    type: String,
-  },
-  emailId: {
-    type: String,
-  },
-  age: {
-    type: Number,
-  },
-
-  gender: {
-    type: String,
-  },
-});
+  {
+    timestamps: true,
+  }
+);
 
 module.exports = mongoose.model("User", userSchema);

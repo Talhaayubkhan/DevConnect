@@ -12,7 +12,7 @@ app.post("/signup", async (req, res) => {
     await user.save();
     res.send("User Created Successfully");
   } catch (error) {
-    res.status(400).send("User Error");
+    res.status(400).send("User Error" + error.message);
   }
 });
 
@@ -74,11 +74,10 @@ app.patch("/user", async (req, res) => {
   const userId = req.body.userId;
   const data = req.body;
   try {
-    console.log(userId);
+    // console.log(userId);
 
     const updateUser = await User.findByIdAndUpdate(userId, data, {
-      returnDocument: "before",
-      lean: true,
+      runValidators: true,
     });
     // console.log(updateUser);
     if (!updateUser) {
@@ -87,7 +86,7 @@ app.patch("/user", async (req, res) => {
       res.send(updateUser);
     }
   } catch (error) {
-    res.status(400).send("User Error");
+    res.status(400).send("User Error" + error.message);
   }
 });
 
