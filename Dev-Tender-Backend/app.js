@@ -7,7 +7,13 @@ const User = require("./src/models/user");
 app.use(express.json());
 
 app.post("/signup", async (req, res) => {
-  const user = new User(req.body);
+  const data = req.body;
+
+  if (data?.skills.length > 10) {
+    throw new Error("Skills must be at least 10!");
+  }
+
+  const user = new User(data);
   try {
     await user.save();
     res.send("User Created Successfully");
@@ -70,11 +76,28 @@ app.delete("/user", async (req, res) => {
     res.status(400).send("User Error");
   }
 });
-app.patch("/user", async (req, res) => {
-  const userId = req.body.userId;
+app.patch("/user/:userId", async (req, res) => {
+  const userId = req.params?.userId;
   const data = req.body;
+
   try {
-    // console.log(userId);
+    const ALLOWED_UPDATES = ["photoURL", "skills", "age", "about", "gender"];
+
+    if (Object.keys(data).includes("email")) {
+      throw new Error("Email cannot be updated!");
+    }
+
+    const isUpdateAllowed = Object.keys(data).every((k) =>
+      ALLOWED_UPDATES.includes(k)
+    );
+
+    if (!isUpdateAllowed) {
+      throw new Error("Updates are not allowed!" + error.message);
+    }
+
+    if (data?.skills.length > 10) {
+      throw new Error("Skills cannot exceed from 10!");
+    }
 
     const updateUser = await User.findByIdAndUpdate(userId, data, {
       runValidators: true,
