@@ -3,22 +3,56 @@ const express = require("express");
 const connectDB = require("./src/config/database");
 const app = express();
 const User = require("./src/models/user");
+const { validateSignUpData } = require("./src/utils/validation");
+const bcrypt = require("bcrypt");
 
 app.use(express.json());
 
 app.post("/signup", async (req, res) => {
-  const data = req.body;
-
-  if (data?.skills.length > 10) {
-    throw new Error("Skills must be at least 10!");
-  }
-
-  const user = new User(data);
   try {
+    // validating the data
+    validateSignUpData(req);
+    const { firstName, lastName, emailId, password, gender, skills, photoURL } =
+      req.body;
+
+    // encrypt the password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const user = new User({
+      firstName,
+      lastName,
+      emailId,
+      gender,
+      photoURL,
+      skills,
+      password: hashedPassword,
+    });
     await user.save();
     res.send("User Created Successfully");
   } catch (error) {
-    res.status(400).send("User Error" + error.message);
+    res.status(400).send("ERROR : " + error.message);
+  }
+});
+
+app.post("/login", async (req, res) => {
+  try {
+    const { emailId, password } = req.body;
+
+    const user = await User.findOne({ emailId: emailId });
+
+    if (!user) {
+      throw new Error("Invalid Credentials, Please Try Again!");
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      throw new Error("Invalid Credentials!");
+    }
+
+    res.send("Login Successful!");
+  } catch (error) {
+    res.status(400).send("ERROR: " + error.message);
   }
 });
 
@@ -93,10 +127,6 @@ app.patch("/user/:userId", async (req, res) => {
 
     if (!isUpdateAllowed) {
       throw new Error("Updates are not allowed!" + error.message);
-    }
-
-    if (data?.skills.length > 10) {
-      throw new Error("Skills cannot exceed from 10!");
     }
 
     const updateUser = await User.findByIdAndUpdate(userId, data, {
