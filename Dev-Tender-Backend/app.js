@@ -5,15 +5,17 @@ const app = express();
 const User = require("./src/models/user");
 const { validateSignUpData } = require("./src/utils/validation");
 const bcrypt = require("bcrypt");
+var cookieParser = require("cookie-parser");
+var jwt = require("jsonwebtoken");
 
 app.use(express.json());
+app.use(cookieParser());
 
 app.post("/signup", async (req, res) => {
   try {
     // validating the data
     validateSignUpData(req);
-    const { firstName, lastName, emailId, password, gender, skills, photoURL } =
-      req.body;
+    const { firstName, lastName, emailId, password, gender, skills } = req.body;
 
     // encrypt the password
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -23,7 +25,6 @@ app.post("/signup", async (req, res) => {
       lastName,
       emailId,
       gender,
-      photoURL,
       skills,
       password: hashedPassword,
     });
@@ -46,16 +47,52 @@ app.post("/login", async (req, res) => {
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
-    if (!isPasswordValid) {
+    if (isPasswordValid) {
+      // create token here
+      const token = jwt.sign({ _id: user._id }, "aYzi3$<q`$FY>>,");
+      // console.log("Token Generated: ", token);
+
+      // add to cookie to send back to browser
+      res.cookie("token", token);
+      res.send("Login Successful!");
+    } else {
       throw new Error("Invalid Credentials!");
     }
-
-    res.send("Login Successful!");
   } catch (error) {
     res.status(400).send("ERROR: " + error.message);
   }
 });
+app.get("/profile", async (req, res) => {
+  try {
+    const cookies = req.cookies;
+    // console.log("Cookie:", cookies);
 
+    const { token } = cookies;
+    // console.log("Token: ", token);
+
+    if (!token) {
+      throw new Error("Invalid Token!");
+    }
+
+    // verify the token
+
+    const decodedInfo = jwt.verify(token, "aYzi3$<q`$FY>>,");
+    // console.log("decoded User Info from Token: ", decodedInfo);
+
+    const { _id } = decodedInfo;
+    // console.log("User ID: ", _id);
+
+    // find the user in the database
+    const user = await User.findById(_id);
+    if (!user) {
+      throw new Error("User Not Found!");
+    }
+
+    res.send(user);
+  } catch (error) {
+    res.status(400).send("ERROR: " + error.message);
+  }
+});
 app.get("/users", async (req, res) => {
   // const userEmail = req.body.emailId;
   const userId = req.body.userId;
