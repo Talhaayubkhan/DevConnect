@@ -1,6 +1,6 @@
 const validator = require("validator");
 const validateSignUpData = (req) => {
-  const { firstName, lastName, emailId, password, skills, photoURL } = req.body;
+  const { firstName, lastName, emailId, password, skills } = req.body;
 
   if (!firstName || !lastName) {
     throw new Error("Both first name and last name are required to proceed.");
@@ -10,11 +10,7 @@ const validateSignUpData = (req) => {
     );
   } else if (!validator.isStrongPassword(password)) {
     throw new Error(
-      "Your password must be stronger. Ensure it has at least 8 characters, including an uppercase letter, a lowercase letter, a number, and a special character."
-    );
-  } else if (!validator.isURL(photoURL)) {
-    throw new Error(
-      "The photo URL provided is not valid. Please provide a proper image link."
+      "Your password must be stronger. Please use a mix of letters, numbers, and symbols."
     );
   } else if (skills.length > 10) {
     throw new Error(

@@ -4,9 +4,9 @@ const connectDB = require("./src/config/database");
 const app = express();
 const User = require("./src/models/user");
 const { validateSignUpData } = require("./src/utils/validation");
-const bcrypt = require("bcrypt");
 var cookieParser = require("cookie-parser");
-var jwt = require("jsonwebtoken");
+const { userAuthCheck } = require("./src/middlewares/auth");
+const bcrypt = require("bcrypt");
 
 app.use(express.json());
 app.use(cookieParser());
@@ -15,7 +15,8 @@ app.post("/signup", async (req, res) => {
   try {
     // validating the data
     validateSignUpData(req);
-    const { firstName, lastName, emailId, password, gender, skills } = req.body;
+    const { firstName, lastName, emailId, password, gender, skills, photoURL } =
+      req.body;
 
     // encrypt the password
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -26,8 +27,10 @@ app.post("/signup", async (req, res) => {
       emailId,
       gender,
       skills,
+      photoURL,
       password: hashedPassword,
     });
+
     await user.save();
     res.send("User Created Successfully");
   } catch (error) {
@@ -45,15 +48,16 @@ app.post("/login", async (req, res) => {
       throw new Error("Invalid Credentials, Please Try Again!");
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = await user.validatePassword(password);
 
     if (isPasswordValid) {
       // create token here
-      const token = jwt.sign({ _id: user._id }, "aYzi3$<q`$FY>>,");
-      // console.log("Token Generated: ", token);
-
-      // add to cookie to send back to browser
-      res.cookie("token", token);
+      const token = user.getJWTToken();
+      // attach token to cookie to send back to browser
+      res.cookie("token", token, {
+        expires: new Date(Date.now() + 8 * 900000),
+        httpOnly: true,
+      });
       res.send("Login Successful!");
     } else {
       throw new Error("Invalid Credentials!");
@@ -62,32 +66,9 @@ app.post("/login", async (req, res) => {
     res.status(400).send("ERROR: " + error.message);
   }
 });
-app.get("/profile", async (req, res) => {
+app.get("/profile", userAuthCheck, async (req, res) => {
   try {
-    const cookies = req.cookies;
-    // console.log("Cookie:", cookies);
-
-    const { token } = cookies;
-    // console.log("Token: ", token);
-
-    if (!token) {
-      throw new Error("Invalid Token!");
-    }
-
-    // verify the token
-
-    const decodedInfo = jwt.verify(token, "aYzi3$<q`$FY>>,");
-    // console.log("decoded User Info from Token: ", decodedInfo);
-
-    const { _id } = decodedInfo;
-    // console.log("User ID: ", _id);
-
-    // find the user in the database
-    const user = await User.findById(_id);
-    if (!user) {
-      throw new Error("User Not Found!");
-    }
-
+    const { user } = req;
     res.send(user);
   } catch (error) {
     res.status(400).send("ERROR: " + error.message);
