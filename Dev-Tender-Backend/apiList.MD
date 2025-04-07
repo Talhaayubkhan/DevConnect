@@ -12,8 +12,8 @@
 
 ## User - ConnectionRequestRouter
 
-- POST /connection/send/interested/:userId
-- POST /connection/review/accepted/:requestId
+- POST /connection/send/:status/:userId
+
 - POST /connection/send/ignored/:userId
 - POST /connection/review/rejected/:requestId
 
