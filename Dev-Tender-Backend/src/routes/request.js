@@ -1,7 +1,7 @@
 const app = require("express");
 const requestRouter = app.Router();
 const { userAuthCheck } = require("../middlewares/auth");
-const connectionRequest = require("../models/connectionRequest");
+const ConnectionRequest = require("../models/connectionRequest");
 const User = require("../models/user");
 
 requestRouter.post(
@@ -26,7 +26,7 @@ requestRouter.post(
 
       if (!validStatuses.includes(status)) {
         return res.status(400).json({
-          message: `Invalid status '${requestStatus}'. Use 'interested' or 'ignored'.`,
+          message: `Invalid status '${status}'. Use 'interested' or 'ignored'.`,
         });
       }
 
@@ -39,8 +39,7 @@ requestRouter.post(
       }
 
       // Prevent duplicate requests between the same two users (in either direction)
-
-      const isSameUserExist = await connectionRequest.findOne({
+      const isSameUserExist = await ConnectionRequest.findOne({
         $or: [
           { fromUserId, toUserId },
           {
@@ -57,7 +56,7 @@ requestRouter.post(
       }
 
       // Create a new connection request instance.
-      const requestConnection = new connectionRequest({
+      const requestConnection = new ConnectionRequest({
         fromUserId,
         toUserId,
         status,
@@ -67,6 +66,56 @@ requestRouter.post(
 
       res.json({
         message: `${req.user.firstName} has ${status} the request of ${targetUser.firstName}`,
+        data: savedRequest,
+      });
+    } catch (error) {
+      res.status(400).send("Error: " + error.message);
+    }
+  }
+);
+
+requestRouter.post(
+  "/request/review/:status/:requestId",
+  userAuthCheck,
+  async (req, res) => {
+    try {
+      // first we extract the loggedInUserId from the request object
+      const loggedInUserId = req.user;
+      // and then we extract the status and requestId from the request parameters
+      const { status, requestId } = req.params;
+
+      // and then check and validate the status and requestId
+      const allowedValidStatuses = ["accepted", "rejected"];
+      if (!allowedValidStatuses.includes(status)) {
+        return res.status(400).json({
+          message: `Invalid status '${status}'. Use 'accepted' or 'rejected'.`,
+        });
+      }
+
+      // Validate the requestId by finding the connection request in the database
+      // - _id ensures the request exists and matches the provided requestId
+      // - toUserId ensures the logged-in user is the recipient of the request
+      // - status: "interested" ensures the request is still pending and actionable
+      const isValidRequestId = await ConnectionRequest.findOne({
+        _id: requestId,
+        toUserId: loggedInUserId._id,
+        status: "interested",
+      });
+
+      // If no matching request is found, return an error
+      if (!isValidRequestId) {
+        return res.status(404).json({
+          message:
+            "Request not found, already processed, or you’re not the recipient.",
+        });
+      }
+
+      // Update the request's status to "accepted" or "rejected" based on user input
+      isValidRequestId.status = status;
+      const savedRequest = await isValidRequestId.save();
+
+      res.json({
+        message: `Congratualtions, You have ${status} the request`,
         data: savedRequest,
       });
     } catch (error) {

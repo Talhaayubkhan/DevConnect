@@ -13,9 +13,7 @@
 ## User - ConnectionRequestRouter
 
 - POST /connection/send/:status/:userId
-
-- POST /connection/send/ignored/:userId
-- POST /connection/review/rejected/:requestId
+- POST /connection/review/:status/:userId
 
 ## user Connection - userConnectionRouter
 
