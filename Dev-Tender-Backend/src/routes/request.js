@@ -79,47 +79,43 @@ requestRouter.post(
   userAuthCheck,
   async (req, res) => {
     try {
-      // first we extract the loggedInUserId from the request object
-      const loggedInUserId = req.user;
-      // and then we extract the status and requestId from the request parameters
+      // first we check the that user loggedIn
+      const loggedInUser = req.user;
       const { status, requestId } = req.params;
+      // then we validate the status?
 
-      // and then check and validate the status and requestId
-      const allowedValidStatuses = ["accepted", "rejected"];
-      if (!allowedValidStatuses.includes(status)) {
+      const isAllowedStatusValid = ["accepted", "rejected"];
+
+      if (!isAllowedStatusValid.includes(status)) {
         return res.status(400).json({
           message: `Invalid status '${status}'. Use 'accepted' or 'rejected'.`,
         });
       }
 
-      // Validate the requestId by finding the connection request in the database
-      // - _id ensures the request exists and matches the provided requestId
-      // - toUserId ensures the logged-in user is the recipient of the request
-      // - status: "interested" ensures the request is still pending and actionable
-      const isValidRequestId = await ConnectionRequest.findOne({
+      // then we check if the requestId is valid or not?
+      const isConnectRequestValid = await ConnectionRequest.findOne({
         _id: requestId,
-        toUserId: loggedInUserId._id,
-        status: "interested",
+        toUserId: loggedInUser._id,
+        status: "ignored",
       });
 
-      // If no matching request is found, return an error
-      if (!isValidRequestId) {
+      if (!isConnectRequestValid) {
         return res.status(404).json({
-          message:
-            "Request not found, already processed, or you’re not the recipient.",
+          message: "Invalid connection request ID or status.",
         });
       }
 
-      // Update the request's status to "accepted" or "rejected" based on user input
-      isValidRequestId.status = status;
-      const savedRequest = await isValidRequestId.save();
+      isConnectRequestValid.status = status;
+      const savedData = await isConnectRequestValid.save();
 
-      res.json({
-        message: `Congratualtions, You have ${status} the request`,
-        data: savedRequest,
+      res.status(200).json({
+        message: `Connection request ${status} successfully.`,
+        data: savedData,
       });
     } catch (error) {
-      res.status(400).send("Error: " + error.message);
+      res.status(400).json({
+        message: "Error: " + error.message,
+      });
     }
   }
 );
