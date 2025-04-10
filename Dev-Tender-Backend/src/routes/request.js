@@ -13,14 +13,7 @@ requestRouter.post(
       const toUserId = req.params.toUserId;
       const status = req.params.status;
 
-      if (!fromUserId || !toUserId || !status) {
-        return res.status(400).json({
-          message: "Please provide all the required fields",
-        });
-      }
-
       // now we check some corner cases in our API to validate the API and protect them!
-
       // Define the valid statuses for a connection request
       const validStatuses = ["interested", "ignored"];
 
@@ -96,7 +89,7 @@ requestRouter.post(
       const isConnectRequestValid = await ConnectionRequest.findOne({
         _id: requestId,
         toUserId: loggedInUser._id,
-        status: "ignored",
+        status: "interested",
       });
 
       if (!isConnectRequestValid) {
