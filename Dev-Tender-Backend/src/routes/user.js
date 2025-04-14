@@ -1,6 +1,7 @@
 const app = require("express");
 const { userAuthCheck } = require("../middlewares/auth");
 const ConnectionRequest = require("../models/connectionRequest");
+const User = require("../models/user");
 const userRouter = app.Router();
 
 const USER_DATA = "firstName lastName photoURL gender about";
@@ -21,7 +22,7 @@ userRouter.get("/user/requests/received", userAuthCheck, async (req, res) => {
       data: isValidConnectionReq,
     });
   } catch (error) {
-    return res.status(400).send("Error: ", error.message);
+    return res.status(400).send(`Error: ${error.message}`);
   }
 });
 
@@ -61,6 +62,45 @@ userRouter.get("/user/connections", userAuthCheck, async (req, res) => {
     });
 
     res.json({ connectedUsers });
+  } catch (error) {
+    return res.status(400).send("Error: ", error.message);
+  }
+});
+
+userRouter.get("/feed", userAuthCheck, async (req, res) => {
+  try {
+    const loggedInUser = req.user;
+
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+
+    const skip = (page - 1) * limit;
+
+    // find all the connection requests where the loggedInUser is either sender or receiver
+    const existingConnections = await ConnectionRequest.find({
+      $or: [{ fromUserId: loggedInUser._id }, { toUserId: loggedInUser._id }],
+    }).select("fromUserId toUserId");
+
+    // we want hide those users from feed who are already connected with loggedInUser
+    const excludedUserIdsFromFeed = new Set();
+
+    existingConnections.forEach((connection) => {
+      excludedUserIdsFromFeed.add(connection.fromUserId.toString());
+      excludedUserIdsFromFeed.add(connection.toUserId.toString());
+    });
+
+    // Find users who are not connected and not the current user
+    const showFeedUsers = await User.find({
+      $and: [
+        { _id: { $nin: Array.from(excludedUserIdsFromFeed) } },
+        { _id: { $ne: loggedInUser._id } },
+      ],
+    })
+      .select(USER_DATA)
+      .skip(skip)
+      .limit(limit);
+
+    res.send(showFeedUsers);
   } catch (error) {
     return res.status(400).send("Error: ", error.message);
   }
