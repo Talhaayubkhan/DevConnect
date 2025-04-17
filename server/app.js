@@ -3,7 +3,15 @@ const express = require("express");
 const app = express();
 const connectDB = require("./src/config/database");
 var cookieParser = require("cookie-parser");
+const cors = require("cors");
+const { frontendOrigin } = require("./src/utils/constants");
 
+app.use(
+  cors({
+    origin: frontendOrigin,
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(cookieParser());
 
