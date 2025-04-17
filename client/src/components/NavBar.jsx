@@ -3,7 +3,7 @@ import React from "react";
 const NavBar = () => {
   return (
     <>
-      <div className="navbar bg-info-content	 shadow-lg">
+      <div className="navbar bg-info-content shadow-lg">
         <div className="flex-1">
           <a className="btn btn-ghost text-2xl">🧑‍💻 DevConnect</a>
         </div>
