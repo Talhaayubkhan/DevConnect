@@ -1,17 +1,21 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
+import { addUser } from "../utils/slices/userSlice";
+import { BACKEND_BASE_URL } from "../utils/constant";
 
 const Login = () => {
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
 
   const handleLoginSubmit = async () => {
     try {
       setIsLoading(true);
       const response = await axios.post(
-        "http://localhost:5000/login",
+        BACKEND_BASE_URL + "/login",
         {
           emailId: userEmail,
           password: userPassword,
@@ -22,7 +26,8 @@ const Login = () => {
       );
       toast.success("Login successful!");
 
-      // console.log(response);
+      const userData = response?.data;
+      dispatch(addUser(userData));
     } catch (error) {
       toast.error(
         error.response?.data?.message || "Login failed. Please try again."
