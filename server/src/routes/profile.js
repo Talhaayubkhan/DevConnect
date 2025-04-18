@@ -3,6 +3,7 @@ const profileRouter = app.Router();
 const { userAuthCheck } = require("../middlewares/auth");
 const { validateEditData } = require("../utils/validation");
 const bcrypt = require("bcrypt");
+
 profileRouter.get("/profile/view", userAuthCheck, async (req, res) => {
   try {
     const { user } = req;

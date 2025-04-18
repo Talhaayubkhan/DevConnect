@@ -4,12 +4,14 @@ import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { addUser } from "../utils/slices/userSlice";
 import { BACKEND_BASE_URL } from "../utils/constant";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleLoginSubmit = async () => {
     try {
@@ -28,6 +30,8 @@ const Login = () => {
 
       const userData = response?.data;
       dispatch(addUser(userData));
+
+      navigate("/");
     } catch (error) {
       toast.error(
         error.response?.data?.message || "Login failed. Please try again."

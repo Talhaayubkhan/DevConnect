@@ -9,7 +9,7 @@ const userAuthCheck = async (req, res, next) => {
     // 2. Validate token (SERVER-side logic)
     if (!token) {
       // 3. Use `res` to reply to CLIENT
-      throw new Error("Invalid token provided ");
+      return res.status(401).send("Access Denied, Try Again With Login...");
     }
 
     const decodedObj = jwt.verify(token, "aYzi3$<q`$FY>>,");
