@@ -6,6 +6,7 @@ import { ToastContainer } from "react-toastify";
 import { Provider } from "react-redux";
 import appStore from "./utils/store/appStore";
 import Feed from "./components/Feed";
+import Error from "./components/Error";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
               <Route path="login" element={<Login />} />
               <Route path="profile" element={<Profile />} />
             </Route>
+            <Route path="*" element={<Error />} />
           </Routes>
           <ToastContainer position="top-center" autoClose={3000} />
         </BrowserRouter>

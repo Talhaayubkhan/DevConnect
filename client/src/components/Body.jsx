@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 import Footer from "./Footer";
 import Header from "./Header";
-import { useAuthUser } from "../hooks/useAuthUser";
+import useAuthUser from "../hooks/useAuthUser";
 
 const Body = () => {
   useAuthUser();

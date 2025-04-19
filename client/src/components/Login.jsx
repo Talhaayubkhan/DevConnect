@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import { addUser } from "../utils/slices/userSlice";
 import { BACKEND_BASE_URL } from "../utils/constant";
 import { useNavigate } from "react-router-dom";
+import { validateInputCredentials } from "../utils/helper";
 
 const Login = () => {
   const [userEmail, setUserEmail] = useState("");
@@ -14,6 +15,11 @@ const Login = () => {
   const navigate = useNavigate();
 
   const handleLoginSubmit = async () => {
+    // validate it, then go
+    if (!validateInputCredentials(userEmail, userPassword)) {
+      return;
+    }
+
     try {
       setIsLoading(true);
       const response = await axios.post(
@@ -72,6 +78,7 @@ const Login = () => {
             value={userPassword}
             onChange={(e) => setUserPassword(e.target.value)}
           />
+
           <div className="pt-5 flex justify-center">
             <button
               className="btn btn-primary mt-4 text-xl px-8"

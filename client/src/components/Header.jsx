@@ -1,9 +1,34 @@
+import axios from "axios";
 import React from "react";
-import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { BACKEND_BASE_URL } from "../utils/constant";
+import { toast } from "react-toastify";
+import { removeUser } from "../utils/slices/userSlice";
 
 const Header = () => {
   const userData = useSelector((store) => store.user);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const handleLogout = async () => {
+    try {
+      await axios.post(
+        BACKEND_BASE_URL + "/logout",
+        {},
+        {
+          withCredentials: true,
+        }
+      );
+
+      dispatch(removeUser());
+      toast.success("Logout successful. See you again!");
+      navigate("/login");
+    } catch (err) {
+      console.error("Logout error:", err);
+      toast.error("Logout failed. Please try again.");
+    }
+  };
+
   return (
     <div className="navbar bg-gradient-to-r from-blue-800 to-indigo-900 shadow-xl rounded-b-lg">
       <div className="flex-1">
@@ -99,7 +124,10 @@ const Header = () => {
               </li>
               <div className="divider my-1"></div>
               <li>
-                <a className="flex items-center p-3 text-error hover:bg-base-300 rounded-lg font-medium">
+                <a
+                  className="flex items-center p-3 text-error hover:bg-base-300 rounded-lg font-medium"
+                  onClick={handleLogout}
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-5 w-5 mr-2"
