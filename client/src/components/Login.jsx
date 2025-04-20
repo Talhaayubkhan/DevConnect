@@ -15,10 +15,7 @@ const Login = () => {
   const navigate = useNavigate();
 
   const handleLoginSubmit = async () => {
-    // validate it, then go
-    if (!validateInputCredentials(userEmail, userPassword)) {
-      return;
-    }
+    if (!validateInputCredentials(userEmail, userPassword)) return;
 
     try {
       setIsLoading(true);
@@ -28,68 +25,67 @@ const Login = () => {
           emailId: userEmail,
           password: userPassword,
         },
-        {
-          withCredentials: true,
-        }
+        { withCredentials: true }
       );
+
       toast.success("Login successful!");
-
-      const userData = response?.data;
-      dispatch(addUser(userData));
-
+      dispatch(addUser(response.data));
       navigate("/");
     } catch (error) {
       toast.error(
         error.response?.data?.message || "Login failed. Please try again."
       );
-
-      console.error("Login error: ", error);
+      console.error("Login error:", error);
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <>
-      <div className="flex justify-center items-center mt-20 w-full">
-        <fieldset className="card bg-base-200 border border-base-300 px-6 py-8 mt-5 rounded-box shadow-lg w-96">
-          <legend className="font-bold text-5xl text-primary px-2">
-            Login
-          </legend>
+    <div className="flex items-center justify-center bg-base-100 my-25 px-4">
+      <div className="w-full max-w-md bg-base-200 rounded-xl shadow-md p-8 border border-base-300">
+        <h1 className="text-5xl font-bold text-primary text-center mb-8">
+          Login
+        </h1>
 
-          <label className="label font-semibold text-2xl">
-            <span className="label-text">Email</span>
-          </label>
+        <div className="mb-5">
+          <label className="label text-lg font-semibold">Email</label>
           <input
             type="email"
+            placeholder="Enter your email"
             className="input input-bordered w-full"
-            placeholder="Email"
             value={userEmail}
             onChange={(e) => setUserEmail(e.target.value)}
           />
+        </div>
 
-          <label className="label font-semibold text-2xl pt-5">
-            <span className="label-text">Password</span>
-          </label>
+        <div className="mb-6">
+          <label className="label text-lg font-semibold">Password</label>
           <input
             type="password"
+            placeholder="Enter your password"
             className="input input-bordered w-full"
-            placeholder="Password"
             value={userPassword}
             onChange={(e) => setUserPassword(e.target.value)}
           />
+        </div>
 
-          <div className="pt-5 flex justify-center">
-            <button
-              className="btn btn-primary mt-4 text-xl px-8"
-              onClick={handleLoginSubmit}
-            >
-              {isLoading ? "Logging in..." : "Login"}
-            </button>
-          </div>
-        </fieldset>
+        <button
+          className="btn btn-primary w-full text-xl mt-2"
+          onClick={handleLoginSubmit}
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <>
+              <span className="loading loading-spinner"></span>
+              Logging in
+            </>
+          ) : (
+            "Login"
+          )}
+        </button>
       </div>
-    </>
+    </div>
   );
 };
 
