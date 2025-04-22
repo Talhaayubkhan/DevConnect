@@ -30,11 +30,10 @@ const Feed = () => {
     fetchFeedData();
   }, []);
 
-  if (!showFeedUsers)
-    return <div className="text-center py-8">Loading feed...</div>;
+  if (!showFeedUsers) return;
 
   return (
-    <div>
+    <div className="pb-25">
       <ShowFeedUsers user={showFeedUsers[0]} />
     </div>
   );

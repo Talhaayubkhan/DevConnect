@@ -99,7 +99,10 @@ const Header = () => {
               </Link>
             </li>
             <li className="mb-1">
-              <a className="flex items-center p-3 hover:bg-base-300 rounded-lg font-medium">
+              <Link
+                to="/connections"
+                className="flex items-center p-3 hover:bg-base-300 rounded-lg font-medium"
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-5 w-5 mr-2"
@@ -120,8 +123,8 @@ const Header = () => {
                     d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
                   />
                 </svg>
-                Settings
-              </a>
+                Connections
+              </Link>
             </li>
             <div className="divider my-1"></div>
             <li>

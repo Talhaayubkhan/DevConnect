@@ -6,6 +6,7 @@ import { ToastContainer } from "react-toastify";
 import { Provider } from "react-redux";
 import appStore from "./utils/store/appStore";
 import Feed from "./components/Feed";
+import Connections from "./components/Connections";
 import Error from "./components/Error";
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
           <Route path="/" element={<Body />}>
             <Route index element={<Feed />} />
             <Route path="profile" element={<Profile />} />
+            <Route path="connections" element={<Connections />} />
           </Route>
 
           {/* Catch-all for errors */}

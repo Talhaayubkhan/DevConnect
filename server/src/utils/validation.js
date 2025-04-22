@@ -23,6 +23,7 @@ const validateEditData = (req) => {
   const allowedEditFields = [
     "firstName",
     "lastName",
+    "password",
     "age",
     "photoURL",
     "gender",
