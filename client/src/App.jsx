@@ -8,6 +8,7 @@ import appStore from "./utils/store/appStore";
 import Feed from "./components/Feed";
 import Connections from "./components/Connections";
 import Error from "./components/Error";
+import Requestes from "./components/Requestes";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
             <Route index element={<Feed />} />
             <Route path="profile" element={<Profile />} />
             <Route path="connections" element={<Connections />} />
+            <Route path="requestes" element={<Requestes />} />
           </Route>
 
           {/* Catch-all for errors */}

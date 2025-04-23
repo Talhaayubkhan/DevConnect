@@ -10,16 +10,14 @@ const Header = () => {
   const userData = useSelector((store) => store.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const handleLogout = async () => {
     try {
       await axios.post(
         BACKEND_BASE_URL + "/logout",
         {},
-        {
-          withCredentials: true,
-        }
+        { withCredentials: true }
       );
-
       dispatch(removeUser());
       toast.success("Logout successful. See you again!");
       navigate("/login");
@@ -58,12 +56,12 @@ const Header = () => {
           <div
             tabIndex={0}
             role="button"
-            className="btn btn-circle btn-ghost avatar online ring ring-primary ring-offset-2 ring-offset-base-100 transition-all hover:scale-105"
+            className="btn btn-circle btn-ghost avatar online ring ring-primary ring-offset-2 ring-offset-base-100 hover:scale-105 transition-all"
           >
             <div className="w-12 rounded-full">
               <img
-                alt="user_logo"
                 src={userData.photoURL}
+                alt="user_logo"
                 className="object-cover"
               />
             </div>
@@ -78,18 +76,18 @@ const Header = () => {
                 to="/profile"
                 className="flex items-center p-3 hover:bg-base-300 rounded-lg font-medium"
               >
+                {/* 👤 Profile Icon */}
                 <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 mr-2"
+                  className="w-5 h-5 mr-2"
                   fill="none"
-                  viewBox="0 0 24 24"
                   stroke="currentColor"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
                 >
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                    d="M12 14c-4 0-8 2-8 6h16c0-4-4-6-8-6zm0-2a4 4 0 100-8 4 4 0 000 8z"
                   />
                 </svg>
                 Profile
@@ -98,56 +96,79 @@ const Header = () => {
                 </span>
               </Link>
             </li>
+
             <li className="mb-1">
               <Link
                 to="/connections"
                 className="flex items-center p-3 hover:bg-base-300 rounded-lg font-medium"
               >
+                {/* 🤝 Connections Icon */}
                 <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 mr-2"
+                  className="w-5 h-5 mr-2"
                   fill="none"
-                  viewBox="0 0 24 24"
                   stroke="currentColor"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
                 >
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                    d="M18 8a6 6 0 00-12 0v4a6 6 0 0012 0V8z"
                   />
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                    d="M6 14v1a4 4 0 004 4h4a4 4 0 004-4v-1"
                   />
                 </svg>
                 Connections
               </Link>
-            </li>
-            <div className="divider my-1"></div>
-            <li>
-              <a
-                className="flex items-center p-3 text-error hover:bg-base-300 rounded-lg font-medium"
-                onClick={handleLogout}
+
+              <Link
+                to="/requestes"
+                className="flex items-center p-3 hover:bg-base-300 rounded-lg font-medium"
               >
+                {/* 📨 Request Icon */}
                 <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 mr-2"
+                  className="w-5 h-5 mr-2"
                   fill="none"
-                  viewBox="0 0 24 24"
                   stroke="currentColor"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
                 >
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    strokeWidth="2"
+                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                  />
+                </svg>
+                Requests
+              </Link>
+            </li>
+
+            <div className="divider my-1" />
+
+            <li>
+              <button
+                onClick={handleLogout}
+                className="flex items-center p-3 text-error hover:bg-base-300 rounded-lg font-medium w-full"
+              >
+                {/* 🚪 Logout Icon */}
+                <svg
+                  className="w-5 h-5 mr-2"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                     d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
                   />
                 </svg>
                 Logout
-              </a>
+              </button>
             </li>
           </ul>
         </div>
@@ -155,5 +176,4 @@ const Header = () => {
     </div>
   );
 };
-
 export default Header;
