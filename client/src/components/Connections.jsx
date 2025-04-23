@@ -24,38 +24,37 @@ const Connections = () => {
       <h1 className="text-4xl font-bold text-center text-primary mb-10">
         Your Connections
       </h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+
+      <div className="space-y-6">
         {showCurrentConnections.map((connection) => {
           const { _id, firstName, lastName, photoURL, age, about, gender } =
             connection;
 
           return (
-            <div className="card bg-base-100 shadow-xl border" key={_id}>
-              <figure className="bg-neutral p-4">
-                <img
-                  src={photoURL || "https://via.placeholder.com/150"}
-                  alt={`${firstName}'s profile`}
-                  className="w-24 h-24 object-cover rounded-full"
-                />
-              </figure>
-              <div className="card-body text-center">
-                <h2 className="card-title justify-center capitalize">
+            <div
+              key={_id}
+              className="flex flex-col sm:flex-row items-center bg-base-100 shadow-md rounded-2xl border border-gray-700 p-4 gap-4"
+            >
+              <img
+                src={photoURL || "https://via.placeholder.com/150"}
+                alt={`${firstName}'s profile`}
+                className="w-24 h-24 object-cover rounded-full border-4 border-primary"
+              />
+
+              <div className="flex-1 text-center sm:text-left space-y-2">
+                <h2 className="text-xl font-bold text-white capitalize">
                   {firstName} {lastName}
-                  <div className="badge badge-secondary">New</div>
+                  <span className="ml-2 badge badge-secondary">Connected</span>
                 </h2>
-                <p className="text-sm font-semibold text-white capitalize">
-                  {about}
-                </p>
-                <div>
-                  <p className="text-sm">
+                <p className="text-sm text-white font-semibold">{about}</p>
+                <div className="text-sm">
+                  <p>
                     <span className="font-medium text-primary">Gender:</span>{" "}
                     {gender}
                   </p>
-                  <p className="text-sm">
-                    <span className="font-medium text-primary capitalize">
-                      Age:
-                    </span>{" "}
-                    {age ? age : "N-A"}
+                  <p>
+                    <span className="font-medium text-primary">Age:</span>{" "}
+                    {age || "N/A"}
                   </p>
                 </div>
               </div>
