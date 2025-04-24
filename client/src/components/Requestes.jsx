@@ -1,16 +1,44 @@
+import { useState } from "react";
 import { FaCheck } from "react-icons/fa";
 import { MdCancel } from "react-icons/md";
+import { useDispatch } from "react-redux";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { motion, AnimatePresence } from "framer-motion";
+
 import useShowRequests from "../hooks/useShowRequestes";
+import { BACKEND_BASE_URL } from "../utils/constant";
+import { removeConnectionRequestById } from "../utils/slices/requestSlice";
 
 const Requests = () => {
+  const [loadingState, setLoadingState] = useState({ id: null, action: null });
   const { showFetchRequests } = useShowRequests();
+  const dispatch = useDispatch();
 
-  const handleAccept = async () => {
-    console.log("Accept clicked");
-  };
+  const reviewingRequests = async (status, _id) => {
+    setLoadingState({ id: _id, action: status });
+    try {
+      const response = await axios.post(
+        `${BACKEND_BASE_URL}/request/review/${status}/${_id}`,
+        {},
+        { withCredentials: true }
+      );
 
-  const handleReject = async () => {
-    console.log("Reject clicked");
+      if (response.status === 200) {
+        dispatch(removeConnectionRequestById(_id));
+        toast.success(
+          `Request ${status === "Accepted" ? "Accepted" : "Rejected"}!`
+        );
+      } else {
+        toast.error("Failed to update request");
+        console.error("Failed:", response.statusText);
+      }
+    } catch (error) {
+      toast.error("Error updating request");
+      console.error("Error accepting request:", error);
+    } finally {
+      setLoadingState({ id: null, action: null });
+    }
   };
 
   if (!showFetchRequests)
@@ -22,8 +50,8 @@ const Requests = () => {
 
   if (showFetchRequests.length === 0)
     return (
-      <div className="flex justify-center items-center h-[50vh]">
-        <h1 className="text-red-600 text-3xl font-semibold">
+      <div className="flex justify-center items-center h-[75vh]">
+        <h1 className="text-red-600 text-4xl font-semibold">
           No Requests Found!
         </h1>
       </div>
@@ -36,56 +64,78 @@ const Requests = () => {
       </h1>
 
       <div className="space-y-6 mb-20">
-        {showFetchRequests.map((request) => {
-          const { _id, firstName, lastName, photoURL, age, about, gender } =
-            request.fromUserId;
+        <AnimatePresence>
+          {showFetchRequests.map((request) => {
+            const { _id, firstName, lastName, photoURL, age, about, gender } =
+              request.fromUserId;
 
-          return (
-            <div
-              key={_id}
-              className="flex flex-col sm:flex-row items-center bg-base-100 shadow-md rounded-2xl border border-gray-700 p-4 gap-4"
-            >
-              <img
-                src={photoURL || "https://via.placeholder.com/150"}
-                alt={`${firstName}'s profile`}
-                className="w-24 h-24 object-cover rounded-full border-4 border-primary"
-              />
+            return (
+              <motion.div
+                key={_id}
+                layout
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.3 }}
+                className="flex flex-col sm:flex-row items-center bg-base-100 shadow-md rounded-2xl border border-gray-700 p-4 gap-4"
+              >
+                <img
+                  src={photoURL || "https://via.placeholder.com/150"}
+                  alt={`${firstName}'s profile`}
+                  className="w-24 h-24 object-cover rounded-full border-4 border-primary"
+                />
 
-              <div className="flex-1 text-center sm:text-left space-y-2">
-                <h2 className="text-xl font-bold text-white capitalize">
-                  {firstName} {lastName}
-                  <span className="ml-2 badge badge-secondary">New</span>
-                </h2>
-                <p className="text-sm text-white font-semibold">{about}</p>
-                <div className="text-sm">
-                  <p>
-                    <span className="font-medium text-primary">Gender:</span>{" "}
-                    {gender}
-                  </p>
-                  <p>
-                    <span className="font-medium text-primary">Age:</span>{" "}
-                    {age || "N/A"}
-                  </p>
+                <div className="flex-1 text-center sm:text-left space-y-2">
+                  <h2 className="text-xl font-bold text-white capitalize">
+                    {firstName} {lastName}
+                    <span className="ml-2 badge badge-secondary">New</span>
+                  </h2>
+                  <p className="text-sm text-white font-semibold">{about}</p>
+                  <div className="text-sm">
+                    <p>
+                      <span className="font-medium text-primary">Gender:</span>{" "}
+                      {gender}
+                    </p>
+                    <p>
+                      <span className="font-medium text-primary">Age:</span>{" "}
+                      {age || "N/A"}
+                    </p>
+                  </div>
                 </div>
-              </div>
 
-              <div className="flex gap-3 mt-4 sm:mt-0">
-                <button
-                  className="btn btn-primary font-bold flex items-center gap-2 "
-                  onClick={handleAccept}
-                >
-                  <FaCheck /> Accept
-                </button>
-                <button
-                  className="btn btn-error font-bold flex items-center gap-2"
-                  onClick={handleReject}
-                >
-                  <MdCancel className="text-xl" /> Reject
-                </button>
-              </div>
-            </div>
-          );
-        })}
+                <div className="flex gap-3 mt-4 sm:mt-0">
+                  <button
+                    className="btn btn-primary font-bold flex items-center gap-2"
+                    onClick={() => reviewingRequests("accepted", request._id)}
+                  >
+                    {loadingState.id === request._id &&
+                    loadingState.action === "accepted" ? (
+                      <span className="loading loading-spinner loading-sm" />
+                    ) : (
+                      <>
+                        <FaCheck /> Accepted
+                      </>
+                    )}
+                  </button>
+
+                  <button
+                    className="btn btn-error font-bold flex items-center gap-2"
+                    onClick={() => reviewingRequests("rejected", request._id)}
+                  >
+                    {loadingState.id === request._id &&
+                    loadingState.action === "rejected" ? (
+                      <span className="loading loading-spinner loading-sm" />
+                    ) : (
+                      <>
+                        <MdCancel className="text-xl" /> Rejected
+                      </>
+                    )}
+                  </button>
+                </div>
+              </motion.div>
+            );
+          })}
+        </AnimatePresence>
       </div>
     </div>
   );

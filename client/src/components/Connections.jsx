@@ -25,7 +25,7 @@ const Connections = () => {
         Your Connections
       </h1>
 
-      <div className="space-y-6">
+      <div className="space-y-6 mb-20">
         {showCurrentConnections.map((connection) => {
           const { _id, firstName, lastName, photoURL, age, about, gender } =
             connection;

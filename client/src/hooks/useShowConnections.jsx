@@ -1,5 +1,5 @@
 import { toast } from "react-toastify";
-import { showConnections } from "../utils/slices/connectionSlice";
+import { setConnectionRequests } from "../utils/slices/connectionSlice";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { BACKEND_BASE_URL } from "../utils/constant";
@@ -16,7 +16,7 @@ const useShowConnections = () => {
       });
       //     console.log(response?.data?.connectedUsers);
 
-      dispatch(showConnections(response?.data?.connectedUsers));
+      dispatch(setConnectionRequests(response?.data?.connectedUsers));
     } catch (error) {
       console.error("Error fetching connections:", error.message);
       // Handle error (e.g., show a toast notification)

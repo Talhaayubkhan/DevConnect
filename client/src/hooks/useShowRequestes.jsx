@@ -11,7 +11,7 @@ const useShowRequests = () => {
   const fetchRequests = async () => {
     try {
       const response = await axios.get(
-        BACKEND_BASE_URL + "/user/requests/received",
+        `${BACKEND_BASE_URL}/user/requests/received`,
         {
           withCredentials: true,
         }

@@ -8,8 +8,12 @@ const requestSlice = createSlice({
     showRequests: (state, action) => {
       return action.payload;
     },
+    removeConnectionRequestById: (state, action) => {
+      return state.filter((request) => request._id !== action.payload);
+    },
   },
 });
 
-export const { showRequests } = requestSlice.actions;
+export const { showRequests, removeConnectionRequestById } =
+  requestSlice.actions;
 export default requestSlice.reducer;
