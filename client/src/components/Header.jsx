@@ -14,7 +14,7 @@ const Header = () => {
   const handleLogout = async () => {
     try {
       await axios.post(
-        BACKEND_BASE_URL + "/logout",
+        `${BACKEND_BASE_URL}/logout`,
         {},
         { withCredentials: true }
       );
@@ -33,8 +33,8 @@ const Header = () => {
     <div className="navbar bg-gradient-to-r from-blue-800 to-indigo-900">
       <div className="flex-1">
         <Link to="/" className="text-2xl font-bold">
-          <span className="text-primary-content flex items-center gap-1 mx-4">
-            <span className="text-2xl">🧑‍💻</span>
+          <span className="text-primary-content flex items-center gap-1 mx-6">
+            <span className="text-xl">🧑‍💻</span>
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-white">
               DevConnect
             </span>
@@ -44,7 +44,7 @@ const Header = () => {
 
       <div className="flex gap-5 mx-5 items-center">
         <div className="hidden md:flex">
-          <p className="text-white text-lg font-semibold capitalize">
+          <p className="text-white text-md font-semibold capitalize">
             Welcome,{" "}
             <span className="text-cyan-300 font-bold">
               {userData.firstName}
@@ -59,11 +59,7 @@ const Header = () => {
             className="btn btn-circle btn-ghost avatar online ring ring-primary ring-offset-2 ring-offset-base-100 hover:scale-105 transition-all"
           >
             <div className="w-12 rounded-full">
-              <img
-                src={userData.photoURL}
-                alt="user_logo"
-                className="object-cover"
-              />
+              <img src={userData.photoURL} alt="user_logo" />
             </div>
           </div>
 

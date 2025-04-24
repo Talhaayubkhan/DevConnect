@@ -5,14 +5,13 @@ import { useDispatch } from "react-redux";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { motion, AnimatePresence } from "framer-motion";
-
 import useShowRequests from "../hooks/useShowRequestes";
 import { BACKEND_BASE_URL } from "../utils/constant";
 import { removeConnectionRequestById } from "../utils/slices/requestSlice";
 
 const Requests = () => {
   const [loadingState, setLoadingState] = useState({ id: null, action: null });
-  const { showFetchRequests } = useShowRequests();
+  const { showFetchRequests, isRequestsLoading } = useShowRequests();
   const dispatch = useDispatch();
 
   const reviewingRequests = async (status, _id) => {
@@ -23,8 +22,9 @@ const Requests = () => {
         {},
         { withCredentials: true }
       );
+      console.log(response.data.data);
 
-      if (response.status === 200) {
+      if (response.data.data.status === 200) {
         dispatch(removeConnectionRequestById(_id));
         toast.success(
           `Request ${status === "Accepted" ? "Accepted" : "Rejected"}!`
@@ -41,7 +41,7 @@ const Requests = () => {
     }
   };
 
-  if (!showFetchRequests)
+  if (isRequestsLoading)
     return (
       <div className="flex justify-center items-center h-[50vh]">
         <span className="loading loading-spinner loading-xl text-primary" />
@@ -73,10 +73,10 @@ const Requests = () => {
               <motion.div
                 key={_id}
                 layout
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
+                initial={{ opacity: 0, scale: 1 }}
+                animate={{ opacity: 1, scale: 0.95 }}
                 exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.5 }}
                 className="flex flex-col sm:flex-row items-center bg-base-100 shadow-md rounded-2xl border border-gray-700 p-4 gap-4"
               >
                 <img
@@ -86,7 +86,7 @@ const Requests = () => {
                 />
 
                 <div className="flex-1 text-center sm:text-left space-y-2">
-                  <h2 className="text-xl font-bold text-white capitalize">
+                  <h2 className="text-lg font-bold text-white capitalize">
                     {firstName} {lastName}
                     <span className="ml-2 badge badge-secondary">New</span>
                   </h2>

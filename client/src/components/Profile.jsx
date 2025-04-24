@@ -7,7 +7,7 @@ const Profile = () => {
 
   if (!user) return <div className="text-center py-8">Loading profile...</div>;
   return (
-    <div className="pt-8 pb-25">
+    <div>
       <EditProfile user={user} />
     </div>
   );
