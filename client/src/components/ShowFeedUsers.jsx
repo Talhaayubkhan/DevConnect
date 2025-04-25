@@ -15,17 +15,30 @@ const ShowFeedUsers = ({ user }) => {
 
   const handleUserDecision = async (status, _id) => {
     setIsLoading({ id: _id, action: status });
+    const targetName = `${firstName} ${lastName}`;
+
     try {
       const response = await axios.post(
         `${BACKEND_BASE_URL}/request/send/${status}/${_id}`,
         {},
         { withCredentials: true }
       );
-      console.log(response?.data?.data);
-      dispatch(removeUserFromFeed(_id));
+      if (response?.data) {
+        // Handle user feedback with toast
+        if (status === "interested") {
+          toast.success(`You showed interest in ${targetName}`);
+        } else if (status === "ignored") {
+          toast.info(`You ignored ${targetName}`);
+        }
+
+        // Remove from feed
+        dispatch(removeUserFromFeed(_id));
+      } else {
+        toast.error(`❌ Something went wrong. Please try again.`);
+      }
     } catch (error) {
+      console.error("Error while sending response:", error);
       toast.error("⚠️ Failed to send your response. Please try again.");
-      console.error("Error: ", error);
     } finally {
       setIsLoading({ id: null, action: null });
     }
@@ -36,7 +49,7 @@ const ShowFeedUsers = ({ user }) => {
       <img
         src={photoURL || "https://via.placeholder.com/400x300"}
         alt={`${firstName}'s profile`}
-        className="w-full h-72 object-cover rounded-t-2xl"
+        className="w-full h-80 object-cover rounded-t-2xl"
       />
       <div className="p-6 space-y-3 text-white">
         <h2 className="text-2xl font-bold capitalize flex items-center gap-2">
@@ -52,7 +65,7 @@ const ShowFeedUsers = ({ user }) => {
           {/* Interested Button */}
           <button
             onClick={() => handleUserDecision("interested", _id)}
-            className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold px-5 py-2 rounded-lg transition"
+            className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white cursor-pointer font-semibold px-5 py-2 rounded-lg transition"
             disabled={isLoading.id === _id}
           >
             {isLoading.id === _id && isLoading.action === "interested" ? (
@@ -67,11 +80,11 @@ const ShowFeedUsers = ({ user }) => {
 
           {/* Ignored Button */}
           <button
-            onClick={() => handleUserDecision("rejected", _id)}
-            className="flex items-center gap-2 border border-red-600 hover:bg-red-700 hover:text-white text-red-400 font-semibold px-5 py-2 rounded-lg transition"
+            onClick={() => handleUserDecision("ignored", _id)}
+            className="flex items-center gap-2 border border-red-600 hover:bg-red-700 hover:text-white cursor-pointer text-red-400 font-semibold px-5 py-2 rounded-lg transition"
             disabled={isLoading.id === _id}
           >
-            {isLoading.id === _id && isLoading.action === "rejected" ? (
+            {isLoading.id === _id && isLoading.action === "ignored" ? (
               <span className="loading loading-spinner loading-sm" />
             ) : (
               <>

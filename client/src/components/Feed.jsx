@@ -7,33 +7,30 @@ import { BACKEND_BASE_URL } from "../lib/constant";
 import ShowFeedUsers from "./ShowFeedUsers";
 
 const Feed = () => {
-  const showFeedUsers = useSelector((store) => store?.feed);
-  console.log(showFeedUsers);
-
+  const showFeedUsers = useSelector((store) => store?.feed?.feed);
+  // console.log(showFeedUsers);
   const dispatch = useDispatch();
+
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchFeedData = async () => {
-      if (showFeedUsers) {
-        setIsLoading(false);
-        return;
-      }
-      try {
-        const response = await axios.get(`${BACKEND_BASE_URL}/feed`, {
-          withCredentials: true,
-        });
-        dispatch(setFeedList(response?.data));
-      } catch (error) {
-        console.error("Error while fetching feed:", error);
-        toast.error(
-          "⚠️ Unable to load your feed at the moment. Please try again later."
-        );
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  const fetchFeedData = async () => {
+    try {
+      const response = await axios.get(`${BACKEND_BASE_URL}/feed`, {
+        withCredentials: true,
+      });
 
+      dispatch(setFeedList(response?.data));
+    } catch (error) {
+      console.error("Error while fetching feed:", error);
+      toast.error(
+        "⚠️ Unable to load your feed at the moment. Please try again later."
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchFeedData();
   }, []);
 
@@ -60,7 +57,7 @@ const Feed = () => {
       <h1 className="text-4xl font-bold text-primary text-center mb-4">
         Explore Feed
       </h1>
-      <div className="flex justify-center">
+      <div className="flex justify-center mb-15">
         <ShowFeedUsers user={showFeedUsers[0]} />
       </div>
     </div>
