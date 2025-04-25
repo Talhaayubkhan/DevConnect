@@ -2,9 +2,9 @@ import axios from "axios";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { BACKEND_BASE_URL } from "../utils/constant";
+import { BACKEND_BASE_URL } from "../lib/constant";
 import { toast } from "react-toastify";
-import { removeUser } from "../utils/slices/userSlice";
+import { removeUser } from "../app/slices/userSlice";
 
 const Header = () => {
   const userData = useSelector((store) => store.user);

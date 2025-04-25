@@ -1,70 +1,85 @@
-// import React from "react";
-
-// const ShowFeedUsers = ({ user }) => {
-//   const { firstName, lastName, photoURL, gender, about } = user;
-
-//   return (
-//     <>
-//       <div className="flex justify-center items-center mt-5">
-//         <div className="card bg-base-200 w-88 shadow-sm">
-//           <figure className="bg-black">
-//             <img src={photoURL} alt="phot_url" />
-//           </figure>
-//           <div className="card-body text-white">
-//             <h2 className="card-title capitalize text-xl">
-//               {firstName} {lastName}
-//               <div className="badge badge-secondary font-bold text-black">
-//                 NEW
-//               </div>
-//             </h2>
-//             <p className="capitalize font-semibold">{gender}</p>
-//             <p className="capitalize">{about}</p>
-//             <div className="card-actions justify-center font-bold items-center mt-4">
-//               <div className="badge badge-outline p-4 bg-primary text-lg">
-//                 Interested
-//               </div>
-//               <div className="badge badge-outline p-4 bg-secondary text-lg">
-//                 Ignored
-//               </div>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//     </>
-//   );
-// };
-
-// export default ShowFeedUsers;
-
-import React from "react";
+import axios from "axios";
+import React, { useState } from "react";
+import { FaHeart, FaTimes } from "react-icons/fa";
+import { BACKEND_BASE_URL } from "../lib/constant";
+import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { removeUserFromFeed } from "../app/slices/feedSlice";
 
 const ShowFeedUsers = ({ user }) => {
+  const [isLoading, setIsLoading] = useState({ id: null, action: null });
+  const dispatch = useDispatch();
+  const { firstName, lastName, photoURL, gender, about, _id } = user;
+
   if (!user) return null;
 
-  const { firstName, lastName, photoURL, gender, about } = user;
+  const handleUserDecision = async (status, _id) => {
+    setIsLoading({ id: _id, action: status });
+    try {
+      const response = await axios.post(
+        `${BACKEND_BASE_URL}/request/send/${status}/${_id}`,
+        {},
+        { withCredentials: true }
+      );
+      console.log(response?.data?.data);
+      dispatch(removeUserFromFeed(_id));
+    } catch (error) {
+      toast.error("⚠️ Failed to send your response. Please try again.");
+      console.error("Error: ", error);
+    } finally {
+      setIsLoading({ id: null, action: null });
+    }
+  };
 
   return (
-    <div className="w-full max-w-sm bg-base-200 rounded-xl shadow-lg overflow-hidden mb-20">
-      <div className="bg-black flex justify-center items-center">
-        <img
-          src={photoURL || "https://via.placeholder.com/400x300"}
-          alt={`${firstName}'s profile`}
-          className="w-full h-80 object-cover rounded-t-xl"
-        />
-      </div>
-      <div className="p-6 text-white space-y-2">
+    <div className="w-full max-w-sm mx-auto bg-base-100 rounded-2xl shadow-md overflow-hidden ring-1 ring-gray-700">
+      <img
+        src={photoURL || "https://via.placeholder.com/400x300"}
+        alt={`${firstName}'s profile`}
+        className="w-full h-72 object-cover rounded-t-2xl"
+      />
+      <div className="p-6 space-y-3 text-white">
         <h2 className="text-2xl font-bold capitalize flex items-center gap-2">
           {firstName} {lastName}
           <span className="badge badge-secondary text-black">NEW</span>
         </h2>
-        <p className="capitalize font-medium text-sm">
-          Gender: <span className="text-primary">{gender}</span>
+        <p className="text-sm text-gray-300">
+          <strong className="text-primary">Gender:</strong> {gender}
         </p>
-        <p className="capitalize text-sm">{about}</p>
+        <p className="text-sm italic">{about}</p>
 
-        <div className="flex justify-between mt-4">
-          <button className="btn btn-primary btn-sm px-6">Interested</button>
-          <button className="btn btn-outline btn-sm px-6">Ignore</button>
+        <div className="flex justify-between mt-6">
+          {/* Interested Button */}
+          <button
+            onClick={() => handleUserDecision("interested", _id)}
+            className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold px-5 py-2 rounded-lg transition"
+            disabled={isLoading.id === _id}
+          >
+            {isLoading.id === _id && isLoading.action === "interested" ? (
+              <span className="loading loading-spinner loading-sm" />
+            ) : (
+              <>
+                <FaHeart className="text-xl text-pink-400" />
+                Interested
+              </>
+            )}
+          </button>
+
+          {/* Ignored Button */}
+          <button
+            onClick={() => handleUserDecision("rejected", _id)}
+            className="flex items-center gap-2 border border-red-600 hover:bg-red-700 hover:text-white text-red-400 font-semibold px-5 py-2 rounded-lg transition"
+            disabled={isLoading.id === _id}
+          >
+            {isLoading.id === _id && isLoading.action === "rejected" ? (
+              <span className="loading loading-spinner loading-sm" />
+            ) : (
+              <>
+                <FaTimes className="text-xl" />
+                Ignored
+              </>
+            )}
+          </button>
         </div>
       </div>
     </div>

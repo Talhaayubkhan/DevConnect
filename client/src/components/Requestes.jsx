@@ -6,8 +6,8 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { motion, AnimatePresence } from "framer-motion";
 import useShowRequests from "../hooks/useShowRequestes";
-import { BACKEND_BASE_URL } from "../utils/constant";
-import { removeConnectionRequestById } from "../utils/slices/requestSlice";
+import { BACKEND_BASE_URL } from "../lib/constant";
+import { removeConnectionRequestById } from "../app/slices/requestSlice";
 
 const Requests = () => {
   const [loadingState, setLoadingState] = useState({ id: null, action: null });
@@ -48,7 +48,7 @@ const Requests = () => {
       </div>
     );
 
-  if (showFetchRequests.length === 0)
+  if (!showFetchRequests && showFetchRequests.length === 0)
     return (
       <div className="flex justify-center items-center h-[75vh]">
         <h1 className="text-red-600 text-4xl font-semibold">

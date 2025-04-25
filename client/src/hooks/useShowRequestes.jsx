@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { showRequests } from "../utils/slices/requestSlice";
-import { BACKEND_BASE_URL } from "../utils/constant";
+import { showRequests } from "../app/slices/requestSlice";
+import { BACKEND_BASE_URL } from "../lib/constant";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 

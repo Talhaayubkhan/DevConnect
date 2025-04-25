@@ -2,8 +2,8 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { addUser } from "../utils/slices/userSlice";
-import { BACKEND_BASE_URL } from "../utils/constant";
+import { addUser } from "../app/slices/userSlice";
+import { BACKEND_BASE_URL } from "../lib/constant";
 import axios from "axios";
 
 const useAuthUser = () => {

@@ -4,7 +4,7 @@ import Login from "./components/Login";
 import Profile from "./components/Profile";
 import { ToastContainer } from "react-toastify";
 import { Provider } from "react-redux";
-import appStore from "./utils/store/appStore";
+import appStore from "./app/appStore";
 import Feed from "./components/Feed";
 import Connections from "./components/Connections";
 import Error from "./components/Error";

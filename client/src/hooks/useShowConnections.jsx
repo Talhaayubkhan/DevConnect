@@ -1,8 +1,8 @@
 import { toast } from "react-toastify";
-import { setConnectionRequests } from "../utils/slices/connectionSlice";
+import { setConnectionRequests } from "../app/slices/connectionSlice";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { BACKEND_BASE_URL } from "../utils/constant";
+import { BACKEND_BASE_URL } from "../lib/constant";
 import axios from "axios";
 
 const useShowConnections = () => {

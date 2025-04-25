@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import ShowFeedUsers from "./ShowFeedUsers";
 import axios from "axios";
-import { BACKEND_BASE_URL } from "../utils/constant";
+import { BACKEND_BASE_URL } from "../lib/constant";
 import { useDispatch } from "react-redux";
-import { addUser } from "../utils/slices/userSlice";
+import { addUser } from "../app/slices/userSlice";
 import { toast } from "react-toastify";
 
 const EditProfile = ({ user }) => {
@@ -45,11 +45,11 @@ const EditProfile = ({ user }) => {
   return (
     <>
       <div className="bg-base-100 flex gap-5 justify-center items-center">
-        <div className="w-full max-w-sm bg-base-200 rounded-xl shadow-md p-5">
+        <div className="w-full mt-10 max-w-sm bg-base-200 rounded-xl shadow-md p-5">
           <h1 className="text-4xl font-bold text-primary text-center mb-2">
             Edit Profile
           </h1>
-          <div>
+          <div className="mt-5">
             <div className="mb-2">
               <label className="label text-lg font-semibold">First Name</label>
               <input
