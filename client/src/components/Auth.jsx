@@ -80,7 +80,7 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-base-200 to-base-100 flex items-center justify-center mt-5 mb-10">
+    <div className="min-h-screen bg-gradient-to-br from-base-200 to-base-100 flex items-center justify-center">
       <div className="w-full max-w-lg bg-base-300 border border-base-200 rounded-4xl shadow-3xl p-8">
         <h1 className="text-4xl font-extrabold text-center text-primary mb-5">
           {isLoginForm ? "Welcome Back 👋" : "Create Account 🙏"}
@@ -89,37 +89,38 @@ const Auth = () => {
         <div className="space-y-5">
           {!isLoginForm && (
             <>
-              <div className="form-control">
-                <label className="label font-semibold">First Name</label>
-                <div className="relative">
-                  <FaUser className="absolute left-3 top-3 text-gray-400" />
-                  <input
-                    type="text"
-                    placeholder="Your First Name"
-                    className="input input-bordered pl-10 w-full"
-                    value={userFirstName}
-                    onChange={(e) => setUserFirstName(e.target.value)}
-                  />
+              <div className="flex gap-3">
+                <div className="form-control w-1/2">
+                  <label className="label font-semibold">First Name</label>
+                  <div className="relative">
+                    <FaUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+                    <input
+                      type="text"
+                      placeholder="First Name"
+                      className="input input-bordered pl-10 w-full"
+                      value={userFirstName}
+                      onChange={(e) => setUserFirstName(e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div className="form-control w-1/2">
+                  <label className="label font-semibold">Last Name</label>
+                  <div className="relative">
+                    <FaUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+                    <input
+                      type="text"
+                      placeholder="Last Name"
+                      className="input input-bordered pl-10 w-full"
+                      value={userLastName}
+                      onChange={(e) => setUserLastName(e.target.value)}
+                    />
+                  </div>
                 </div>
               </div>
 
               <div className="form-control">
-                <label className="label font-semibold">Last Name</label>
-                <div className="relative">
-                  <FaUser className="absolute left-3 top-3 text-gray-400" />
-                  <input
-                    type="text"
-                    placeholder="Your Last Name"
-                    className="input input-bordered pl-10 w-full"
-                    value={userLastName}
-                    onChange={(e) => setUserLastName(e.target.value)}
-                  />
-                </div>
-              </div>
-              <div className="form-control">
-                <label className="label font-semibold">
-                  Skills (comma-separated)
-                </label>
+                <label className="label font-semibold">Skills</label>
                 <div className="relative">
                   <FaUserPlus className="absolute left-3 top-3 text-gray-400" />
                   <input

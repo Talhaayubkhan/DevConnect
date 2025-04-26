@@ -57,8 +57,10 @@ const Feed = () => {
       <h1 className="text-4xl font-bold text-primary text-center mb-4">
         Explore Feed
       </h1>
-      <div className="flex justify-center mb-15">
-        <ShowFeedUsers user={showFeedUsers[0]} />
+      <div className="flex justify-center ">
+        {showFeedUsers.map((user, index) => (
+          <ShowFeedUsers key={user._id} user={user} index={index} />
+        ))}
       </div>
     </div>
   );
