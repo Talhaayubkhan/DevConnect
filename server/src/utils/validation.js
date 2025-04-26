@@ -12,10 +12,8 @@ const validateSignUpData = (req) => {
     throw new Error(
       "Your password must be stronger. Please use a mix of letters, numbers, and symbols."
     );
-  } else if (skills.length > 10) {
-    throw new Error(
-      "You can add up to 10 skills only. Remove extra skills before proceeding."
-    );
+  } else if (skills.length < 5) {
+    throw new Error("You Must Add Upto Five Skills Atleast!");
   }
 };
 

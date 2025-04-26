@@ -48,7 +48,7 @@ const Requests = () => {
       </div>
     );
 
-  if (!showFetchRequests && showFetchRequests.length === 0)
+  if (showFetchRequests.length === 0)
     return (
       <div className="flex justify-center items-center h-[75vh]">
         <h1 className="text-red-600 text-4xl font-semibold">

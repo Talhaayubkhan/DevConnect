@@ -1,6 +1,6 @@
 import Body from "./components/Body";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Login from "./components/Login";
+import Auth from "./components/Auth";
 import Profile from "./components/Profile";
 import { ToastContainer } from "react-toastify";
 import { Provider } from "react-redux";
@@ -16,7 +16,7 @@ function App() {
       <BrowserRouter basename="/">
         <Routes>
           {/* Routes without layout (no Header/Footer) */}
-          <Route path="/login" element={<Login />} />
+          <Route path="/login" element={<Auth />} />
           {/* Routes with Header/Footer */}
           <Route path="/" element={<Body />}>
             <Route index element={<Feed />} />
