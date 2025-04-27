@@ -44,7 +44,7 @@ const EditProfile = ({ user }) => {
 
   return (
     <>
-      <div className="bg-base-100 flex gap-5 justify-center items-center">
+      <div className="bg-base-100 flex gap-5 justify-center items-center mt-20 mb-15">
         <div className="w-full mt-5 max-w-sm bg-base-200 rounded-xl shadow-md p-5">
           <h1 className="text-4xl font-bold text-primary text-center mb-2">
             Edit Profile
@@ -82,17 +82,6 @@ const EditProfile = ({ user }) => {
                 onChange={(e) => setphotoURL(e.target.value)}
               />
             </div>
-            {/* 
-              <div className="mb-2">
-                <label className="label text-lg font-semibold">Password</label>
-                <input
-                  type="password"
-                  placeholder="Enter your Password"
-                  className="input input-bordered w-full"
-                  value={userPassword}
-                  onChange={(e) => setUserPassword(e.target.value)}
-                />
-              </div> */}
 
             <div className="form-control w-full mb-2">
               <label className="label">
@@ -133,6 +122,7 @@ const EditProfile = ({ user }) => {
         <div className="mt-5">
           <ShowFeedUsers
             user={{ firstName, lastName, photoURL, about, gender }}
+            isSwipeCard={false}
           />
         </div>
       </div>

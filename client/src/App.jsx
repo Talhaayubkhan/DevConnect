@@ -9,26 +9,53 @@ import Feed from "./components/Feed";
 import Connections from "./components/Connections";
 import Error from "./components/Error";
 import Requestes from "./components/Requestes";
+import HomePage from "./pages/Home";
+// import ProtectedRoute from "./pages/ProtectedRoute";
 
 function App() {
   return (
     <Provider store={appStore}>
       <BrowserRouter basename="/">
         <Routes>
-          {/* Routes without layout (no Header/Footer) */}
-          <Route path="/login" element={<Auth />} />
-          {/* Routes with Header/Footer */}
+          <Route path="login" element={<Auth />} />
           <Route path="/" element={<Body />}>
-            <Route index element={<Feed />} />
-            <Route path="profile" element={<Profile />} />
-            <Route path="connections" element={<Connections />} />
-            <Route path="requestes" element={<Requestes />} />
+            <Route index element={<HomePage />} />
+            <Route
+              path="feed"
+              element={
+                // <ProtectedRoute>
+                <Feed />
+                // </ProtectedRoute>
+              }
+            />
+            <Route
+              path="profile"
+              element={
+                // <ProtectedRoute>
+                <Profile />
+                // </ProtectedRoute>
+              }
+            />
+            <Route
+              path="connections"
+              element={
+                // <ProtectedRoute>
+                <Connections />
+                // </ProtectedRoute>
+              }
+            />
+            <Route
+              path="requestes"
+              element={
+                // <ProtectedRoute>
+                <Requestes />
+                // </ProtectedRoute>
+              }
+            />
+            <Route path="*" element={<Error />} />
           </Route>
-
-          {/* Catch-all for errors */}
-          <Route path="*" element={<Error />} />
         </Routes>
-        <ToastContainer position="top-center" autoClose={2500} />
+        <ToastContainer position="top-center" autoClose={3000} />
       </BrowserRouter>
     </Provider>
   );

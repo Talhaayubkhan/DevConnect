@@ -5,15 +5,13 @@ import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { removeUserFromFeed } from "../app/slices/feedSlice";
 
-const ShowFeedUsers = ({ user }) => {
-  // const [isLoading, setIsLoading] = useState({ id: null, action: null });
+const ShowFeedUsers = ({ user, index, isSwipeCard = true }) => {
   const dispatch = useDispatch();
   const { firstName, lastName, photoURL, gender, about, _id } = user;
 
   if (!user) return null;
 
   const handleUserDecision = async (status, _id) => {
-    // setIsLoading({ id: _id, action: status });
     const targetName = `${firstName} ${lastName}`;
 
     try {
@@ -23,14 +21,11 @@ const ShowFeedUsers = ({ user }) => {
         { withCredentials: true }
       );
       if (response?.data) {
-        // Handle user feedback with toast
         if (status === "interested") {
-          toast.success(`You showed interest in ${targetName}`);
+          toast.success(`❤️ You showed interest in ${targetName}`);
         } else if (status === "ignored") {
-          toast.info(`You ignored ${targetName}`);
+          toast.info(`❌ You ignored ${targetName}`);
         }
-
-        // Remove from feed
         dispatch(removeUserFromFeed(_id));
       } else {
         toast.error(`❌ Something went wrong. Please try again.`);
@@ -39,24 +34,32 @@ const ShowFeedUsers = ({ user }) => {
       console.error("Error while sending response:", error);
       toast.error("⚠️ Failed to send your response. Please try again.");
     }
-    // finally {
-    //   setIsLoading({ id: null, action: null });
-    // }
   };
 
   const onSwipe = (direction) => {
-    if (direction == "right") {
+    if (direction === "right") {
       handleUserDecision("interested", _id);
-    } else if (direction == "left") {
+    } else if (direction === "left") {
       handleUserDecision("ignored", _id);
     }
   };
 
   return (
     <TinderCard
-      onSwipe={onSwipe}
+      onSwipe={isSwipeCard ? onSwipe : ""}
       preventSwipe={["up", "down"]}
-      className="absolute flex justify-center"
+      flickOnSwipe={isSwipeCard}
+      disableRightSwipe={true}
+      swipeRequirementType="velocity"
+      swipeThreshold={400}
+      className={`${
+        isSwipeCard ? "absolute" : ""
+      } flex justify-center items-center`}
+      style={{
+        zIndex: 100 - index,
+        transition: "transform 0.3s ease-out",
+        pointerEvents: isSwipeCard ? "auto" : "none",
+      }}
     >
       <div className="w-full max-w-sm mx-auto bg-base-100 rounded-2xl shadow-md overflow-hidden ring-1 ring-gray-700">
         <img
@@ -64,6 +67,7 @@ const ShowFeedUsers = ({ user }) => {
           alt={`${firstName}'s profile`}
           className="w-full h-80 object-cover rounded-t-2xl"
         />
+
         <div className="p-6 space-y-3 text-white">
           <h2 className="text-2xl font-bold capitalize flex items-center gap-2">
             {firstName} {lastName}
@@ -80,37 +84,3 @@ const ShowFeedUsers = ({ user }) => {
 };
 
 export default ShowFeedUsers;
-
-// <div className="flex justify-between mt-6">
-//   {/* Interested Button */}
-//   <button
-//     onClick={() => handleUserDecision("interested", _id)}
-//     className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white cursor-pointer font-semibold px-5 py-2 rounded-lg transition"
-//     disabled={isLoading.id === _id}
-//   >
-//     {isLoading.id === _id && isLoading.action === "interested" ? (
-//       <span className="loading loading-spinner loading-sm" />
-//     ) : (
-//       <>
-//         <FaHeart className="text-xl text-pink-400" />
-//         Interested
-//       </>
-//     )}
-//   </button>
-
-//   {/* Ignored Button */}
-//   <button
-//     onClick={() => handleUserDecision("ignored", _id)}
-//     className="flex items-center gap-2 border border-red-600 hover:bg-red-700 hover:text-white cursor-pointer text-red-400 font-semibold px-5 py-2 rounded-lg transition"
-//     disabled={isLoading.id === _id}
-//   >
-//     {isLoading.id === _id && isLoading.action === "ignored" ? (
-//       <span className="loading loading-spinner loading-sm" />
-//     ) : (
-//       <>
-//         <FaTimes className="text-xl" />
-//         Ignored
-//       </>
-//     )}
-//   </button>
-// </div>;

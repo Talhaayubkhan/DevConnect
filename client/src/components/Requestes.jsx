@@ -22,9 +22,9 @@ const Requests = () => {
         {},
         { withCredentials: true }
       );
-      console.log(response.data.data);
+      // console.log(response.data.data);
 
-      if (response.data.data.status === 200) {
+      if (response?.data?.data?.status == 200) {
         dispatch(removeConnectionRequestById(_id));
         toast.success(
           `Request ${status === "Accepted" ? "Accepted" : "Rejected"}!`

@@ -21,7 +21,7 @@ const Connections = () => {
     );
 
   return (
-    <div className="px-4 md:px-10 lg:px-20 py-10">
+    <div className="px-4 md:px-10 lg:px-20 mt-20">
       <h1 className="text-4xl font-bold text-center text-primary mb-10">
         Your Connections
       </h1>
