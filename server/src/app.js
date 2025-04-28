@@ -1,10 +1,10 @@
 require("dotenv").config();
 const express = require("express");
 const app = express();
-const connectDB = require("./src/config/database");
+const connectDB = require("./config/database");
 var cookieParser = require("cookie-parser");
 const cors = require("cors");
-const { frontendOrigin } = require("./src/utils/constants");
+const { frontendOrigin } = require("./utils/constants");
 
 app.use(
   cors({
@@ -15,10 +15,10 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
-const authRouter = require("./src/routes/auth");
-const profileRouter = require("./src/routes/profile");
-const requestRouter = require("./src/routes/request");
-const userRouter = require("./src/routes/user");
+const authRouter = require("./routes/auth");
+const profileRouter = require("./routes/profile");
+const requestRouter = require("./routes/request");
+const userRouter = require("./routes/user");
 
 app.use("/", authRouter);
 app.use("/", profileRouter);
